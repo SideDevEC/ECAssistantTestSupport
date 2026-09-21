@@ -83,4 +83,16 @@ public class TestSessionOutput : ISessionOutput
         var response = _gui.PromptRaw("[y/N] ");
         return response?.Trim().ToLower() == "y" || response?.Trim().ToLower() == "yes";
     }
+
+    /// <summary>v14.9: interactive checkpoint — prompt via GUI, 1-based pick, null = cancel.</summary>
+    public int? RequestChoice(string prompt, System.Collections.Generic.IReadOnlyList<string> options)
+    {
+        WriteLine(prompt, OutputState.Warning);
+        for (int i = 0; i < options.Count; i++)
+            WriteLine($"  {i + 1}) {options[i]}", OutputState.Info);
+        var response = _gui.PromptRaw($"[1-{options.Count}, Enter=skip] ");
+        if (int.TryParse(response?.Trim(), out var pick) && pick >= 1 && pick <= options.Count)
+            return pick;
+        return null;
+    }
 }
