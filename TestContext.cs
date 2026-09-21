@@ -1,6 +1,6 @@
 using ECAssistant.Core.Engine;
 using ECAssistant.Core.Orchestration;
-namespace ECAssistant.Core.Testing;
+namespace ECAssistant.TestSupport;
 
 public class TestContext
 {

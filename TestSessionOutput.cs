@@ -1,6 +1,6 @@
 using ECAssistant.Core.Session;
 
-namespace ECAssistant.Core.Testing;
+namespace ECAssistant.TestSupport;
 
 /// <summary>
 /// Test implementation of ISessionOutput.

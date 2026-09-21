@@ -1,4 +1,4 @@
-name: Publish ECAssistant.Core.TestSupport NuGet Package
+name: Publish ECAssistant.TestSupport NuGet Package
 
 on:
   workflow_dispatch:
@@ -41,10 +41,10 @@ jobs:
             https://nuget.pkg.github.com/SideDevEC/index.json
 
       - name: Restore dependencies
-        run: dotnet restore ECAssistant.Core.TestSupport.csproj
+        run: dotnet restore ECAssistant.TestSupport.csproj
 
       - name: Build (Release)
-        run: dotnet build ECAssistant.Core.TestSupport.csproj --configuration Release --no-restore
+        run: dotnet build ECAssistant.TestSupport.csproj --configuration Release --no-restore
 
       - name: Set version from tag or input
         id: version
@@ -58,7 +58,7 @@ jobs:
 
       - name: Pack NuGet package
         run: |
-          dotnet pack ECAssistant.Core.TestSupport.csproj \
+          dotnet pack ECAssistant.TestSupport.csproj \
             --configuration Release \
             --no-build \
             /p:PackageVersion=${{ steps.version.outputs.version }} \

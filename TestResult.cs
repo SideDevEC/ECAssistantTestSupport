@@ -1,4 +1,4 @@
-namespace ECAssistant.Core.Testing;
+namespace ECAssistant.TestSupport;
 
 public class TestResult
 {

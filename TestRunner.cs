@@ -19,7 +19,7 @@ using ECAssistant.Core.Interfaces;
 using ECAssistant.Core.Transport;
 using ECAssistant.Core.UI;
 
-namespace ECAssistant.Core.Testing;
+namespace ECAssistant.TestSupport;
 
 /// <summary>
 /// Automated test runner for ECAssistant.
@@ -303,7 +303,7 @@ public sealed class TestRunner : IAsyncDisposable
         var userConfigDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "ECAssistant");
         var configPath = Path.Combine(userConfigDir, "appsettings.json");
         var config = File.Exists(configPath)
-            ? new Config.ConfigLoader(new Services.FileSystemAdapter()).Load(configPath)
+            ? new ECAssistant.Core.Config.ConfigLoader(new ECAssistant.Core.Services.FileSystemAdapter()).Load(configPath)
             : new EAgentConfig();
 
         // Override model path with our test model
@@ -329,9 +329,9 @@ public sealed class TestRunner : IAsyncDisposable
         }
         else
         {
-            var client = new Transport.OpenAIClient(config.LlmProvider.ResolvedEndpoint);
-            var testInference = new Services.Http.HttpStreamingEngine(client, config.LlmProvider.ModelId, "test");
-            var testKvCache = new Services.Http.RemoteKvCacheController(client);
+            var client = new ECAssistant.Core.Transport.OpenAIClient(config.LlmProvider.ResolvedEndpoint);
+            var testInference = new ECAssistant.Core.Services.Http.HttpStreamingEngine(client, config.LlmProvider.ModelId, "test");
+            var testKvCache = new ECAssistant.Core.Services.Http.RemoteKvCacheController(client);
             engine = new EAgentEngine(
                 sessionId: "test",
                 inferenceEngine: testInference,

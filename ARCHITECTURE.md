@@ -1,11 +1,11 @@
 # ECAssistantTestSupport — Architecture (2026-09-21)
 
-**Summary:** Standalone test-harness library for ECAssistant.Core — run agent scenarios end-to-end without a real LLM. Published to NuGet as `ECAssistant.Core.TestSupport`; consumed by test suites only, never by runtime code.
+**Summary:** Standalone test-harness library for ECAssistant.Core — run agent scenarios end-to-end without a real LLM. Published to NuGet as `ECAssistant.TestSupport`; consumed by test suites only, never by runtime code.
 
 ## Key Facts
-- Single assembly: `ECAssistant.Core.TestSupport` (net8.0), namespace `ECAssistant.Core.TestSupport`
+- Single assembly: `ECAssistant.TestSupport` (net8.0), namespace `ECAssistant.TestSupport`
 - Depends on `ECAssistant.Core` (PackageReference by default; sibling ProjectReference when `EcaUseProjectRefs=true`)
-- `ECAssistant.Core` grants `InternalsVisibleTo("ECAssistant.Core.TestSupport")` — the harness may inspect internals
+- `ECAssistant.Core` grants `InternalsVisibleTo("ECAssistant.TestSupport")` — the harness may inspect internals
 - Consumers: ECAssistantCore `Tests/` and ECAssistantConsole `Tests/` (dev-only). Never referenced by any packable runtime project
 - Publish: tag `test-support-v*` → `.github/workflows/publish-testsupport.yml` (GitHub Packages + nuget.org, trusted publishing)
 

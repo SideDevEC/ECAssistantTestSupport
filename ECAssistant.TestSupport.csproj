@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <RootNamespace>ECAssistant.Core.TestSupport</RootNamespace>
-    <AssemblyName>ECAssistant.Core.TestSupport</AssemblyName>
+    <RootNamespace>ECAssistant.TestSupport</RootNamespace>
+    <AssemblyName>ECAssistant.TestSupport</AssemblyName>
     <IsPackable>true</IsPackable>
     <Version>12.9.9</Version>
     <Authors>SideDevEC</Authors>
