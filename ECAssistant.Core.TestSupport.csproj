@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ECAssistant.Core.TestSupport</RootNamespace>
+    <AssemblyName>ECAssistant.Core.TestSupport</AssemblyName>
+    <IsPackable>true</IsPackable>
+    <Version>12.9.9</Version>
+    <Authors>SideDevEC</Authors>
+    <Company>SideDevEC</Company>
+    <Product>ECAssistant</Product>
+    <PackageProjectUrl>https://github.com/SideDevEC/ECAssistantTestSupport</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SideDevEC/ECAssistantTestSupport.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>Test-support harness for ECAssistant.Core (TestRunner, scenarios, MockEngine). Not for production use.</Description>
+  </PropertyGroup>
+
+  <!-- Local dev: build against the sibling Core source. CI/NuGet: restore the published package. -->
+  <ItemGroup Condition="'$(EcaUseProjectRefs)' == 'true'">
+    <ProjectReference Include="../ECAssistantCore/ECAssistant.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(EcaUseProjectRefs)' != 'true'">
+    <PackageReference Include="ECAssistant.Core" Version="12.9.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>

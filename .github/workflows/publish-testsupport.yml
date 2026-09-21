@@ -1,0 +1,106 @@
+name: Publish ECAssistant.Core.TestSupport NuGet Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (e.g. 12.9.9)'
+        required: true
+        default: '12.9.9'
+  push:
+    tags:
+      - 'test-support-v*'
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Add GitHub Packages source
+        run: |
+          dotnet nuget add source \
+            --username SideDevEC \
+            --password ${{ secrets.GITHUB_TOKEN }} \
+            --store-password-in-clear-text \
+            --name github \
+            https://nuget.pkg.github.com/SideDevEC/index.json
+
+      - name: Restore dependencies
+        run: dotnet restore ECAssistant.Core.TestSupport.csproj
+
+      - name: Build (Release)
+        run: dotnet build ECAssistant.Core.TestSupport.csproj --configuration Release --no-restore
+
+      - name: Set version from tag or input
+        id: version
+        run: |
+          if [[ "${{ github.event.inputs.version }}" != "" ]]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            TAG="${GITHUB_REF#refs/tags/test-support-v}"
+            echo "version=$TAG" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Pack NuGet package
+        run: |
+          dotnet pack ECAssistant.Core.TestSupport.csproj \
+            --configuration Release \
+            --no-build \
+            /p:PackageVersion=${{ steps.version.outputs.version }} \
+            -o ./nupkg
+
+      - name: Publish to GitHub Packages
+        run: |
+          dotnet nuget push ./nupkg/*.nupkg \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --source https://nuget.pkg.github.com/SideDevEC/index.json \
+            --skip-duplicate
+
+      - name: Log in to nuget.org via OIDC (trusted publishing)
+        uses: NuGet/login@v1
+        id: nuget-login
+        continue-on-error: true
+        with:
+          user: SideDevEC
+
+      - name: Publish to nuget.org (trusted publishing)
+        if: ${{ steps.nuget-login.outputs.NUGET_API_KEY != '' }}
+        continue-on-error: true
+        run: |
+          dotnet nuget push ./nupkg/*.nupkg \
+            --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecassistant-testsupport-${{ steps.version.outputs.version }}
+          path: ./nupkg/*.nupkg
+          retention-days: 30
+
+      - name: Create GitHub Release (tag pushes only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ECAssistant ${{ github.ref_name }}
+          generate_release_notes: true
+          files: ./nupkg/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
