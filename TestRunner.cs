@@ -7,7 +7,6 @@ using ECAssistant.Core.Tools;
 using ECAssistant.Core.Tools.Shell;
 using ECAssistant.Core.Tools.Research;
 using ECAssistant.Core.Tools.Background;
-using ECAssistant.Core.Tools.Web;
 using ECAssistant.Core.Tools.Build;
 using ECAssistant.Core.Tools.Git;
 using ECAssistant.Core.Tools.Code;
@@ -378,21 +377,17 @@ public sealed class TestRunner : IAsyncDisposable
         var processRunner = new ProcessRunner();
         var fileSystem = new FileSystemAdapter();
         var httpClient = new HttpClientAdapter();
-        var contentExtractor = new ReadableContentExtractor();
-        var htmlConverter = new HtmlTextConverter();
 
         // v10.24: Pass EAgentConfig to tools instead of ConfigProvider
         _shellAgent = new EShellAgent(processRunner, config, workingDir);
         engine.RegisterTool(_shellAgent);
         engine.RegisterTool(new EBackgroundExecTool(_bgMgr, processRunner, fileSystem, config));
-        engine.RegisterTool(new EWebSearchTool(httpClient, config));
         engine.RegisterTool(new EDotnetBuildTool(processRunner, config));
         engine.RegisterTool(new EGitTool(processRunner, fileSystem, config));
         engine.RegisterTool(new ECodeEditorTool(fileSystem, config));
 
-        // v10.22: EFileReader + EWebFetch
+        // v10.22: EFileReader
         engine.RegisterTool(new EFileReaderTool(fileSystem, config));
-        engine.RegisterTool(new EWebFetchTool(httpClient, contentExtractor, htmlConverter, config));
 
         // File research tool
         engine.RegisterTool(new EFileResearchTool(fileSystem, config));
