@@ -18,8 +18,6 @@ public sealed class UserExperienceHarness : IOutputListener
     private readonly List<(string Text, OutputState State)> _transcript = new();
     private readonly object _lock = new();
     private readonly Func<string, ApprovalScope> _approvalResponder;
-    private string _streamBuffer = "";
-    private bool _streaming;
 
     private UserExperienceHarness(AgentSession session, Func<string, ApprovalScope> approvalResponder)
     {
@@ -114,14 +112,12 @@ public sealed class UserExperienceHarness : IOutputListener
 
     public void OnStreamStart()
     {
-        _streaming = true;
-        _streamBuffer = "";
+        // Streamed content is flushed via WriteLine by the session; nothing to buffer.
     }
 
     public void OnStreamStop()
     {
         // Streamed content is flushed via WriteLine by the session; nothing to do.
-        _streaming = false;
     }
 
     public bool OnRequestApproval(string message)

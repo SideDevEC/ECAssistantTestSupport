@@ -33,6 +33,7 @@ public sealed class TestRunner : IAsyncDisposable
     private AgentOrchestrator? _orchestrator;
     private EGuiTestHarness? _testGui;
     private BackgroundProcessManager? _bgMgr;
+    private FileWatcherService? _fileWatcher;
     private EShellAgent? _shellAgent;
     private readonly ILogger _logger;
 
@@ -82,6 +83,7 @@ public sealed class TestRunner : IAsyncDisposable
         Console.WriteLine($"  ┌─ Test: {scenario.Name}");
         Console.WriteLine($"  │  Sandbox: {sandboxDir}");
         var sw = Stopwatch.StartNew();
+        EGuiTestHarness? gui = null;
 
         try
         {
@@ -94,6 +96,7 @@ public sealed class TestRunner : IAsyncDisposable
 
             // Set up the non-interactive GUI harness
             _testGui = new EGuiTestHarness();
+            gui = _testGui; // captured: the finally block nulls the field before the verbose dump runs
             // v10.23: Set Gui on TestRunner instead of Program.Gui (decoupled from App)
             TestGui = _testGui;
 
@@ -115,7 +118,14 @@ public sealed class TestRunner : IAsyncDisposable
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(scenario.TimeoutSeconds));
 
             _engine.StartExecution();
-            var orchResult = await orchestrator.ExecuteMultiStep(scenario.Prompt);
+            var orchTask = orchestrator.ExecuteMultiStep(scenario.Prompt);
+            // v-fix: the timeout source was previously created but never enforced —
+            // a hung scenario blocked the runner forever. Race the run against the
+            // deadline; only scenarios that finish in time are unaffected.
+            var completed = await Task.WhenAny(orchTask, Task.Delay(Timeout.InfiniteTimeSpan, cts.Token));
+            if (completed != orchTask)
+                throw new TimeoutException($"Scenario '{scenario.Name}' exceeded its {scenario.TimeoutSeconds}s timeout");
+            var orchResult = await orchTask;
             _engine.EndExecution();
 
             result.FinalOutput = orchResult.FinalOutput ?? "";
@@ -232,6 +242,20 @@ public sealed class TestRunner : IAsyncDisposable
                 try { await _engine.DisposeAsync(); } catch { }
                 _engine = null;
             }
+            // v-fix: release background processes and the FileSystemWatcher handle —
+            // both are IDisposable and previously leaked per scenario.
+            if (_bgMgr != null)
+            {
+                try { _bgMgr.Dispose(); } catch { }
+                _bgMgr = null;
+            }
+            if (_fileWatcher != null)
+            {
+                try { _fileWatcher.Dispose(); } catch { }
+                _fileWatcher = null;
+            }
+            _orchestrator = null;
+            _testGui = null;
         }
 
         sw.Stop();
@@ -247,10 +271,10 @@ public sealed class TestRunner : IAsyncDisposable
         }
 
         // v10.17.2: Verbose mode — dump full captured log for debugging
-        if (Verbose && _testGui != null)
+        if (Verbose && gui != null)
         {
             var dumpPath = Path.Combine(TestRootDir, $"{scenario.Name.Replace(" ", "_")}_full_log.txt");
-            _testGui.DumpToFile(dumpPath);
+            gui.DumpToFile(dumpPath);
             Console.WriteLine($"     📝 Full log: {dumpPath}");
         }
 
@@ -305,11 +329,12 @@ public sealed class TestRunner : IAsyncDisposable
             ? new ECAssistant.Core.Config.ConfigLoader(new ECAssistant.Core.Services.FileSystemAdapter()).Load(configPath)
             : new EAgentConfig();
 
-        // Override model path with our test model
+        // Override model path with our test model (Llm may be null if the loaded
+        // config explicitly sets it to null — default the context size).
         config.Llm = new LlmConfig
         {
             ModelPath = _modelPath,
-            ContextSize = config.Llm.ContextSize,
+            ContextSize = config.Llm?.ContextSize ?? 8192,
         };
 
         // Build inference params
@@ -371,8 +396,8 @@ public sealed class TestRunner : IAsyncDisposable
         _bgMgr = new BackgroundProcessManager();
 
         // File watcher
-        var fileWatcher = new FileWatcherService(workingDir, logger: _logger);
-        fileWatcher.Start();
+        _fileWatcher = new FileWatcherService(workingDir, logger: _logger);
+        _fileWatcher.Start();
 
         // Register tools
         var processRunner = new ProcessRunner();
@@ -422,6 +447,16 @@ public sealed class TestRunner : IAsyncDisposable
         if (_engine != null)
         {
             try { await _engine.DisposeAsync(); } catch { }
+        }
+        if (_bgMgr != null)
+        {
+            try { _bgMgr.Dispose(); } catch { }
+            _bgMgr = null;
+        }
+        if (_fileWatcher != null)
+        {
+            try { _fileWatcher.Dispose(); } catch { }
+            _fileWatcher = null;
         }
     }
 

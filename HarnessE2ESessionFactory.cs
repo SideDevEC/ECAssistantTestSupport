@@ -30,12 +30,21 @@ public sealed class HarnessE2ESessionFactory
         Action<string>? prepareWorkingDir = null)
     {
         var regClient = new OpenAIClient(endpoint);
-        var regBody = JsonSerializer.Serialize(
-            new { client_name = clientName ?? "harness-e2e", version = "1.0" });
-        var regJson = await regClient.PostJsonAsync("/eca/clients", regBody);
-        var clientId = JsonDocument.Parse(regJson)
-            .RootElement.GetProperty("client_id").GetString()
-            ?? throw new InvalidOperationException("client registration returned no client_id");
+        string clientId;
+        try
+        {
+            var regBody = JsonSerializer.Serialize(
+                new { client_name = clientName ?? "harness-e2e", version = "1.0" });
+            var regJson = await regClient.PostJsonAsync("/eca/clients", regBody);
+            using var regDoc = JsonDocument.Parse(regJson);
+            clientId = regDoc.RootElement.GetProperty("client_id").GetString()
+                ?? throw new InvalidOperationException("client registration returned no client_id");
+        }
+        finally
+        {
+            // HttpClient inside OpenAIClient must not leak per harness creation.
+            regClient.Dispose();
+        }
 
         var workingDir = Directory.CreateTempSubdirectory("eca-harness-e2e").FullName;
         prepareWorkingDir?.Invoke(workingDir);
