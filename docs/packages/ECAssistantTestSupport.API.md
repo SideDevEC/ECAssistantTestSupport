@@ -1,6 +1,6 @@
 # ECAssistantTestSupport.API.md
 
-Types: 12  |  LOC: 1584  |  ~703 tokens
+Types: 13  |  LOC: 1679  |  ~761 tokens
 
 ---
 
@@ -61,3 +61,8 @@ Implements: ISessionOutput
 Constructor:
   - TestSessionOutput(EGuiTestHarness gui)
 Cross-package deps: ECAssistant.Core.Session
+
+### Class: UserExperienceHarness
+> v14.19: user-experience E2E harness — simulates EXACTLY what a user would
+Implements: IOutputListener
+Cross-package deps: ECAssistant.Core.Config, ECAssistant.Core.Engine, ECAssistant.Core.Session

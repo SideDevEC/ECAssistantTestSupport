@@ -10,7 +10,7 @@
 - Version 12.9.12; Core pin 12.9.13 (live on nuget)
 - Publish: tag `test-support-v*` → `.github/workflows/publish-testsupport.yml` (GitHub Packages + nuget.org, trusted publishing)
 
-## Classes
+## Classes (2026-09-23 — +UserExperienceHarness v14.19 user-experience E2E; factory runs SessionBuilder tool registration + CreateTiered params)
 | Class | Purpose |
 |---|---|
 | `TestRunner` | Executes `TestScenario`s end-to-end, collects `TestResult`s |
@@ -22,7 +22,8 @@
 | `TestContext`, `TestSessionOutput` | Run context + captured output helpers |
 | `InferenceEngineNoop`, `KvCacheNoop` | Public no-op doubles (extracted from MockEngine 2026-09-23) |
 | `ProbeTestTool` | Harmless typed-schema test tool, shared across suites |
-| `HarnessE2ESessionFactory` | Real-server harness e2e: client registration → X-Client-Id → fully wired AgentSession |
+| `HarnessE2ESessionFactory` | Real-server harness e2e: client registration → X-Client-Id → fully wired AgentSession (tier-tuned inference params via `CreateTiered`) |
+| `UserExperienceHarness` (v14.19) | User-experience E2E: drives `AgentSession.Prompt` (the real user entry point), captures every visible output line via `IOutputListener`, answers approval prompts like a user, runs **Verbose**, and registers the **real product tool set** (`SessionBuilder.RegisterBuiltInToolsAsync`). Journeys assert on the visible transcript, not engine internals. Gate: env `ECA_E2E_SERVER` (+ optional `ECA_E2E_MODEL`) |
 
 ## Dependency Flow
 ```

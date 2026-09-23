@@ -1,12 +1,12 @@
 # PACKAGE-MAP.md — ECAssistantTestSupport
 
-Generated: 2026-09-23T07:29:44.359219+00:00
+Generated: 2026-09-23T10:32:49.354584+00:00
 
 ---
 
 | Package | Types | LOC | ~Tokens | Dependencies |
 |---|---|---|---|---|
-| ECAssistantTestSupport | 12 | 1584 | ~703 | — |
+| ECAssistantTestSupport | 13 | 1679 | ~761 | — |
 
 ---
 
