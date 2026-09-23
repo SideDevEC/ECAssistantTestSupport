@@ -31,6 +31,9 @@ public sealed class UserExperienceHarness : IOutputListener
     /// <summary>Working directory the session runs in (temp, cleaned on Dispose).</summary>
     public string WorkingDir { get; private set; } = "";
 
+    /// <summary>The underlying session (for deep diagnostics in E2E failure dumps).</summary>
+    public AgentSession Session => _session;
+
     /// <summary>Everything the user saw, in order.</summary>
     public IReadOnlyList<(string Text, OutputState State)> Transcript
     {
@@ -64,6 +67,19 @@ public sealed class UserExperienceHarness : IOutputListener
                 engine.RegisterTool(new ProbeTestTool());
                 configure?.Invoke(engine);
             });
+        // v14.19: TUI default is Silent (diagnostics hidden). The harness simulates a
+        // VERBOSE user (like the TUI's /verbosity toggle) so journeys can assert on
+        // the full visible experience — playbook captures, verify lines, policy flow.
+        session.SetVerbosity(SessionVerbosity.Verbose);
+        // v14.19: register the REAL product tool set (SessionBuilder), exactly like
+        // the TUI/Console do — journeys must exercise the tools a real user has.
+        try
+        {
+            var sessionBuilder = new global::ECAssistant.Core.SessionBuilder(
+                config ?? new EAgentConfig(), dir, dir);
+            sessionBuilder.RegisterBuiltInToolsAsync(session);
+        }
+        catch { /* tool registration must never block harness creation */ }
         return new UserExperienceHarness(session, approvalResponder ?? (_ => ApprovalScope.AllowOnce))
         {
             WorkingDir = dir
