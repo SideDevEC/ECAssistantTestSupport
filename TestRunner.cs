@@ -356,6 +356,7 @@ public sealed class TestRunner : IAsyncDisposable
 
         // Self-correction
         engine.InitializeSelfCorrection(workingDir);
+        engine.InitializePlaybooks(workingDir);
 
         // Project context
         await engine.InitializeProjectContextAsync(workingDir);

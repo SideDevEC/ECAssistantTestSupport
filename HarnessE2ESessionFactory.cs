@@ -38,12 +38,15 @@ public sealed class HarnessE2ESessionFactory
 
         var workingDir = Directory.CreateTempSubdirectory("eca-harness-e2e").FullName;
         var effectiveConfig = config ?? new EAgentConfig();
+        // v14.17: tier-tuned params — match product wiring (small tier tightens default sampling).
+        var tierIsLarge = effectiveConfig.ModelTier?.IsLargeRuntime(effectiveConfig.LlmProvider?.IsLocal ?? true)
+            ?? !(effectiveConfig.LlmProvider?.IsLocal ?? true);
         var session = new AgentSession(
             key: "e2e-" + Guid.NewGuid().ToString("N")[..8],
             sessionId: "e2e-sess-" + Guid.NewGuid().ToString("N")[..8],
             endpoint: endpoint,
             clientId: clientId,
-            inferenceParams: InferenceParamsFactory.Default.Create(effectiveConfig),
+            inferenceParams: InferenceParamsFactory.Default.CreateTiered(effectiveConfig, tierIsLarge),
             workingDir: workingDir,
             inferenceLock: new SemaphoreSlim(1, 1),
             config: effectiveConfig,
