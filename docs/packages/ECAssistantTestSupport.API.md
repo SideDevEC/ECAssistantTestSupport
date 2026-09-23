@@ -1,17 +1,17 @@
 # ECAssistantTestSupport.API.md
 
-Types: 13  |  LOC: 1679  |  ~761 tokens
+Types: 13  |  LOC: 1713  |  ~759 tokens
 
 ---
+
+### Class: EcaTestSuite
+> Predefined test scenarios for ECAssistant.
+Cross-package deps: ECAssistant.Core.Orchestration
 
 ### Class: GuiTestHarness
 > Non-interactive test harness for GuiBase.
 Implements: GuiBase
 Cross-package deps: ECAssistant.Core.UI
-
-### Class: EcaTestSuite
-> Predefined test scenarios for ECAssistant.
-Cross-package deps: ECAssistant.Core.Orchestration
 
 ### Class: HarnessE2ESessionFactory
 > Creates a REAL AgentSession stack (HttpStreamingEngine + RemoteKvCacheController

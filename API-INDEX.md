@@ -1,14 +1,14 @@
 # API-INDEX.md — ECAssistantTestSupport
 
-Generated: 2026-09-23T10:32:49.354058+00:00
+Generated: 2026-09-23T13:57:58.869702+00:00
 Packages: 1  |  Types: 13
 
 ---
 
-## ECAssistantTestSupport (13 types, ~1679 LOC)
+## ECAssistantTestSupport (13 types, ~1713 LOC)
 
-- 🟡 GuiTestHarness : GuiBase  (ECAssistantTestSupport)
 - 🟡 EcaTestSuite  (ECAssistantTestSupport)
+- 🟡 GuiTestHarness : GuiBase  (ECAssistantTestSupport)
 - 🟡 HarnessE2ESessionFactory  (ECAssistantTestSupport)
 - 🟡 InferenceEngineNoop : IInferenceEngine  (ECAssistantTestSupport)
 - 🟡 KvCacheNoop : IKvCacheController  (ECAssistantTestSupport)
