@@ -36,7 +36,7 @@ Cross-package deps: ECAssistant.Core.Config, ECAssistant.Core.Engine, ECAssistan
 
 ### Class: ProbeTestTool
 > Harmless registered test tool — typed schema, deterministic output, no side
-Implements: ToolBase
+Implements: EToolBase
 Cross-package deps: ECAssistant.Core.Tools
 
 ### Class: TestContext

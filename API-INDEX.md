@@ -13,7 +13,7 @@ Packages: 1  |  Types: 13
 - 🟡 InferenceEngineNoop : IInferenceEngine  (ECAssistantTestSupport)
 - 🟡 KvCacheNoop : IKvCacheController  (ECAssistantTestSupport)
 - 🟡 MockEngine : AgentEngine  (ECAssistantTestSupport)  deps: [Queue, int maxIterations =, bool stopAfterFirstTool =, string? workingDir =, ISessionOutput? sessionOutput =, string? workingDir =, ISessionOutput? sessionOutput =, bool cycleResponses =, AppConfig? config =]
-- 🟡 ProbeTestTool : ToolBase  (ECAssistantTestSupport)
+- 🟡 ProbeTestTool : EToolBase  (ECAssistantTestSupport)
 - 🟡 TestContext  (ECAssistantTestSupport)
 - 🟡 TestResult  (ECAssistantTestSupport)
 - 🟡 TestRunner : IAsyncDisposable  (ECAssistantTestSupport)  deps: [string, string? testRootDir =, ILogger? logger =]
