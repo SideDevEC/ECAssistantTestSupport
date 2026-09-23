@@ -1,4 +1,4 @@
-# ECAssistantTestSupport — Architecture (2026-09-21)
+# ECAssistantTestSupport — Architecture (2026-09-23)
 
 **Summary:** Standalone test-harness library for ECAssistant.Core — run agent scenarios end-to-end without a real LLM. Published to NuGet as `ECAssistant.TestSupport`; consumed by test suites only, never by runtime code.
 
@@ -7,6 +7,7 @@
 - Depends on `ECAssistant.Core` (PackageReference by default; sibling ProjectReference when `EcaUseProjectRefs=true`)
 - `ECAssistant.Core` grants `InternalsVisibleTo("ECAssistant.TestSupport")` — the harness may inspect internals
 - Consumers: ECAssistantCore `Tests/` and ECAssistantConsole `Tests/` (dev-only). Never referenced by any packable runtime project
+- Version 12.9.12; Core pin 12.9.13 (live on nuget)
 - Publish: tag `test-support-v*` → `.github/workflows/publish-testsupport.yml` (GitHub Packages + nuget.org, trusted publishing)
 
 ## Classes
@@ -15,10 +16,13 @@
 | `TestRunner` | Executes `TestScenario`s end-to-end, collects `TestResult`s |
 | `TestScenario` | Declarative scenario definition |
 | `TestResult` | Outcome model (passed/failed, transcript) |
-| `MockEngine` | Fake inference engine — no model, no GPU, no server |
+| `MockEngine` | Fake inference engine — no model, no GPU, no server; ctors take optional `config` (tier profiles flow through the real ctor) |
 | `EcaTests` | Catalog of ready-made scenarios (tools, memory, sessions) |
 | `EGuiTestHarness` | TUI test harness support |
 | `TestContext`, `TestSessionOutput` | Run context + captured output helpers |
+| `InferenceEngineNoop`, `KvCacheNoop` | Public no-op doubles (extracted from MockEngine 2026-09-23) |
+| `ProbeTestTool` | Harmless typed-schema test tool, shared across suites |
+| `HarnessE2ESessionFactory` | Real-server harness e2e: client registration → X-Client-Id → fully wired AgentSession |
 
 ## Dependency Flow
 ```
