@@ -4,11 +4,11 @@ using ECAssistant.Core.UI;
 namespace ECAssistant.TestSupport;
 
 /// <summary>
-/// Non-interactive test harness for EGuiBase.
+/// Non-interactive test harness for GuiBase.
 /// Captures all output into a StringBuilder log and provides scripted input.
 /// This is how tests "pretend to be the user" — no console interaction needed.
 /// </summary>
-public sealed class EGuiTestHarness : EGuiBase
+public sealed class GuiTestHarness : GuiBase
 {
     private readonly StringBuilder _log = new();
     private readonly Queue<string?> _inputQueue = new();
@@ -39,7 +39,7 @@ public sealed class EGuiTestHarness : EGuiBase
     /// <summary>Clear captured output (for between tests).</summary>
     public void ClearOutput() { lock (_lock) _log.Clear(); }
 
-    // ── EGuiBase implementation ───────────────────
+    // ── GuiBase implementation ───────────────────
 
     public override void WriteLine(string text)
     {

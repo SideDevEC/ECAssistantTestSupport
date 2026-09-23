@@ -4,16 +4,16 @@ namespace ECAssistant.TestSupport;
 
 /// <summary>
 /// Test implementation of ISessionOutput.
-/// Captures all output and routes approval requests to the EGuiTestHarness's queued input.
+/// Captures all output and routes approval requests to the GuiTestHarness's queued input.
 /// </summary>
 public class TestSessionOutput : ISessionOutput
 {
-    private readonly EGuiTestHarness _gui;
+    private readonly GuiTestHarness _gui;
     private readonly System.Text.StringBuilder _streamBuffer = new();
     private OutputState _streamState = OutputState.Raw;
     private readonly List<(string text, OutputState state)> _outputLog = new();
 
-    public TestSessionOutput(EGuiTestHarness gui)
+    public TestSessionOutput(GuiTestHarness gui)
     {
         _gui = gui;
     }

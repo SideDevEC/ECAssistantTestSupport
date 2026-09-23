@@ -10,7 +10,7 @@ namespace ECAssistant.TestSupport;
 
 /// <summary>
 /// Creates a REAL AgentSession stack (HttpStreamingEngine + RemoteKvCacheController
-/// → EAgentEngine → AgentOrchestrator) against a LIVE ECAssistantLLM server — the
+/// → AgentEngine → AgentOrchestrator) against a LIVE ECAssistantLLM server — the
 /// harness end-to-end entry point. Follows the server contract: register a client
 /// identity (/eca/clients), then carry X-Client-Id on every request.
 /// The working directory is a fresh temp dir — the caller deletes it after
@@ -24,8 +24,8 @@ public sealed class HarnessE2ESessionFactory
     /// </summary>
     public async Task<(AgentSession Session, string WorkingDir)> CreateAsync(
         string endpoint,
-        EAgentConfig? config = null,
-        Action<EAgentEngine>? configure = null,
+        AppConfig? config = null,
+        Action<AgentEngine>? configure = null,
         string? clientName = null,
         Action<string>? prepareWorkingDir = null)
     {
@@ -48,7 +48,7 @@ public sealed class HarnessE2ESessionFactory
 
         var workingDir = Directory.CreateTempSubdirectory("eca-harness-e2e").FullName;
         prepareWorkingDir?.Invoke(workingDir);
-        var effectiveConfig = config ?? new EAgentConfig();
+        var effectiveConfig = config ?? new AppConfig();
         // v14.17: tier-tuned params — match product wiring (small tier tightens default sampling).
         var tierIsLarge = effectiveConfig.ModelTier?.IsLargeRuntime(effectiveConfig.LlmProvider?.IsLocal ?? true)
             ?? !(effectiveConfig.LlmProvider?.IsLocal ?? true);

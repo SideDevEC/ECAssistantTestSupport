@@ -12,7 +12,7 @@ namespace ECAssistant.TestSupport;
 /// Mock engine for testing — no real model loaded. Returns pre-queued responses.
 /// Uses no-op HTTP transport so tests don't require a running ECAssistantLLM server.
 /// </summary>
-public class MockEngine : EAgentEngine
+public class MockEngine : AgentEngine
 {
     private readonly Queue<string> _responses = new();
     private readonly Queue<LLMDecision> _decisions = new();
@@ -46,7 +46,7 @@ public class MockEngine : EAgentEngine
         SetSessionOutput(sessionOutput);
     }
 
-    public MockEngine(string? workingDir = null, ISessionOutput? sessionOutput = null, bool cycleResponses = false, EAgentConfig? config = null)
+    public MockEngine(string? workingDir = null, ISessionOutput? sessionOutput = null, bool cycleResponses = false, AppConfig? config = null)
         : base("mock-" + Guid.NewGuid().ToString("N")[..8],
             InferenceEngineNoop.Instance, KvCacheNoop.Instance,
             tokenizer: null,

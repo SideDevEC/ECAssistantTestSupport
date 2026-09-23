@@ -6,7 +6,7 @@ namespace ECAssistant.TestSupport;
 /// Harmless registered test tool — typed schema, deterministic output, no side
 /// effects. Shared across test suites for tier / grammar-union / e2e harness runs.
 /// </summary>
-public sealed class ProbeTestTool : EToolBase
+public sealed class ProbeTestTool : ToolBase
 {
     public override string Name => "ProbeTool";
     public override string Description =>
@@ -18,7 +18,7 @@ public sealed class ProbeTestTool : EToolBase
         {"type":"object","required":["action"],"properties":{"action":{"type":"string","enum":["probe"]}}}
         """;
 
-    public override Task<EToolResult> ExecuteAsync(
+    public override Task<ToolResult> ExecuteAsync(
         Dictionary<string, string?> arguments, CancellationToken cancellationToken = default)
-        => Task.FromResult(EToolResult.Success("ProbeTool", "PROBE OK: all systems nominal"));
+        => Task.FromResult(ToolResult.Success("ProbeTool", "PROBE OK: all systems nominal"));
 }

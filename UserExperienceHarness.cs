@@ -51,9 +51,9 @@ public sealed class UserExperienceHarness : IOutputListener
     /// </summary>
     public static async Task<UserExperienceHarness> CreateAsync(
         string serverUrl,
-        EAgentConfig? config = null,
+        AppConfig? config = null,
         Func<string, ApprovalScope>? approvalResponder = null,
-        Action<EAgentEngine>? configure = null,
+        Action<AgentEngine>? configure = null,
         string? modelId = null)
     {
         var factory = new HarnessE2ESessionFactory();
@@ -74,7 +74,7 @@ public sealed class UserExperienceHarness : IOutputListener
         try
         {
             var sessionBuilder = new global::ECAssistant.Core.SessionBuilder(
-                config ?? new EAgentConfig(), dir, dir);
+                config ?? new AppConfig(), dir, dir);
             sessionBuilder.RegisterBuiltInToolsAsync(session);
         }
         catch { /* tool registration must never block harness creation */ }

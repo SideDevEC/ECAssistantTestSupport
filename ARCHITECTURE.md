@@ -18,7 +18,7 @@
 | `TestResult` | Outcome model (passed/failed, transcript) |
 | `MockEngine` | Fake inference engine — no model, no GPU, no server; ctors take optional `config` (tier profiles flow through the real ctor) |
 | `EcaTests` | Catalog of ready-made scenarios (tools, memory, sessions) |
-| `EGuiTestHarness` | TUI test harness support |
+| `GuiTestHarness` | TUI test harness support |
 | `TestContext`, `TestSessionOutput` | Run context + captured output helpers |
 | `InferenceEngineNoop`, `KvCacheNoop` | Public no-op doubles (extracted from MockEngine 2026-09-23) |
 | `ProbeTestTool` | Harmless typed-schema test tool, shared across suites |

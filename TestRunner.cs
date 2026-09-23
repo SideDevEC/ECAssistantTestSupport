@@ -29,9 +29,9 @@ public sealed class TestRunner : IAsyncDisposable
 {
     private readonly string _modelPath;
     public readonly string TestRootDir;
-    private EAgentEngine? _engine;
+    private AgentEngine? _engine;
     private AgentOrchestrator? _orchestrator;
-    private EGuiTestHarness? _testGui;
+    private GuiTestHarness? _testGui;
     private BackgroundProcessManager? _bgMgr;
     private FileWatcherService? _fileWatcher;
     private EShellAgent? _shellAgent;
@@ -41,7 +41,7 @@ public sealed class TestRunner : IAsyncDisposable
     /// v10.23: Static GUI reference for test harness. Replaces the old Program.Gui coupling.
     /// Components that need the GUI during tests read from this instead of Program.Gui.
     /// </summary>
-    public static EGuiTestHarness? TestGui { get; set; }
+    public static GuiTestHarness? TestGui { get; set; }
 
     public List<TestResult> Results { get; } = new();
 
@@ -83,7 +83,7 @@ public sealed class TestRunner : IAsyncDisposable
         Console.WriteLine($"  ┌─ Test: {scenario.Name}");
         Console.WriteLine($"  │  Sandbox: {sandboxDir}");
         var sw = Stopwatch.StartNew();
-        EGuiTestHarness? gui = null;
+        GuiTestHarness? gui = null;
 
         try
         {
@@ -95,7 +95,7 @@ public sealed class TestRunner : IAsyncDisposable
             }
 
             // Set up the non-interactive GUI harness
-            _testGui = new EGuiTestHarness();
+            _testGui = new GuiTestHarness();
             gui = _testGui; // captured: the finally block nulls the field before the verbose dump runs
             // v10.23: Set Gui on TestRunner instead of Program.Gui (decoupled from App)
             TestGui = _testGui;
@@ -320,14 +320,14 @@ public sealed class TestRunner : IAsyncDisposable
     }
 
     /// <summary>Set up the engine, tools, and orchestrator for a test run.</summary>
-    private async Task<(EAgentEngine engine, AgentOrchestrator orchestrator)> SetupEngineAndToolsAsync(string workingDir)
+    private async Task<(AgentEngine engine, AgentOrchestrator orchestrator)> SetupEngineAndToolsAsync(string workingDir)
     {
         // Load config from the user's ~/ECAssistant/appsettings.json
         var userConfigDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "ECAssistant");
         var configPath = Path.Combine(userConfigDir, "appsettings.json");
         var config = File.Exists(configPath)
             ? new ECAssistant.Core.Config.ConfigLoader(new ECAssistant.Core.Services.FileSystemAdapter()).Load(configPath)
-            : new EAgentConfig();
+            : new AppConfig();
 
         // Override model path with our test model (Llm may be null if the loaded
         // config explicitly sets it to null — default the context size).
@@ -341,7 +341,7 @@ public sealed class TestRunner : IAsyncDisposable
         var inferenceParams = InferenceParamsFactory.Default.Create(config);
 
         // Create the engine
-        EAgentEngine engine;
+        AgentEngine engine;
         if (UseMockEngine)
         {
             // v10.22: Mock engine — no GGUF needed, returns predefined responses
@@ -356,7 +356,7 @@ public sealed class TestRunner : IAsyncDisposable
             var client = new ECAssistant.Core.Transport.OpenAIClient(config.LlmProvider.ResolvedEndpoint);
             var testInference = new ECAssistant.Core.Services.Http.HttpStreamingEngine(client, config.LlmProvider.ModelId, "test");
             var testKvCache = new ECAssistant.Core.Services.Http.RemoteKvCacheController(client);
-            engine = new EAgentEngine(
+            engine = new AgentEngine(
                 sessionId: "test",
                 inferenceEngine: testInference,
                 kvCacheController: testKvCache,
@@ -404,7 +404,7 @@ public sealed class TestRunner : IAsyncDisposable
         var fileSystem = new FileSystemAdapter();
         var httpClient = new HttpClientAdapter();
 
-        // v10.24: Pass EAgentConfig to tools instead of ConfigProvider
+        // v10.24: Pass AppConfig to tools instead of ConfigProvider
         _shellAgent = new EShellAgent(processRunner, config, workingDir);
         engine.RegisterTool(_shellAgent);
         engine.RegisterTool(new EBackgroundExecTool(_bgMgr, processRunner, fileSystem, config));

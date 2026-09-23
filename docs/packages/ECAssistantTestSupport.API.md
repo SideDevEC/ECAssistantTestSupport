@@ -4,9 +4,9 @@ Types: 13  |  LOC: 1679  |  ~761 tokens
 
 ---
 
-### Class: EGuiTestHarness
-> Non-interactive test harness for EGuiBase.
-Implements: EGuiBase
+### Class: GuiTestHarness
+> Non-interactive test harness for GuiBase.
+Implements: GuiBase
 Cross-package deps: ECAssistant.Core.UI
 
 ### Class: EcaTestSuite
@@ -29,14 +29,14 @@ Cross-package deps: ECAssistant.Core.Interfaces
 
 ### Class: MockEngine
 > Mock engine for testing — no real model loaded. Returns pre-queued responses.
-Implements: EAgentEngine
+Implements: AgentEngine
 Constructor:
-  - MockEngine(Queue<string> responses, int maxIterations = 5, bool stopAfterFirstTool = false, string? workingDir = null, ISessionOutput? sessionOutput = null, string? workingDir = null, ISessionOutput? sessionOutput = null, bool cycleResponses = false, EAgentConfig? config = null)
+  - MockEngine(Queue<string> responses, int maxIterations = 5, bool stopAfterFirstTool = false, string? workingDir = null, ISessionOutput? sessionOutput = null, string? workingDir = null, ISessionOutput? sessionOutput = null, bool cycleResponses = false, AppConfig? config = null)
 Cross-package deps: ECAssistant.Core.Config, ECAssistant.Core.Engine, ECAssistant.Core.Interfaces, ECAssistant.Core.Orchestration, ECAssistant.Core.Session
 
 ### Class: ProbeTestTool
 > Harmless registered test tool — typed schema, deterministic output, no side
-Implements: EToolBase
+Implements: ToolBase
 Cross-package deps: ECAssistant.Core.Tools
 
 ### Class: TestContext
@@ -59,7 +59,7 @@ Cross-package deps: ECAssistant.Core.Orchestration
 > Test implementation of ISessionOutput.
 Implements: ISessionOutput
 Constructor:
-  - TestSessionOutput(EGuiTestHarness gui)
+  - TestSessionOutput(GuiTestHarness gui)
 Cross-package deps: ECAssistant.Core.Session
 
 ### Class: UserExperienceHarness
