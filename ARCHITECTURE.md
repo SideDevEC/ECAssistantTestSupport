@@ -22,7 +22,7 @@
 | `TestContext`, `TestSessionOutput` | Run context + captured output helpers |
 | `InferenceEngineNoop`, `KvCacheNoop` | Public no-op doubles (extracted from MockEngine 2026-09-23) |
 | `ProbeTestTool` | Harmless typed-schema test tool, shared across suites |
-| `HarnessE2ESessionFactory` | Real-server harness e2e: client registration → X-Client-Id → fully wired AgentSession (tier-tuned inference params via `CreateTiered`) |
+| `HarnessE2ESessionFactory` | Real-server harness e2e: client registration → X-Client-Id → fully wired AgentSession (tier-tuned inference params via `CreateTiered`; optional `prepareWorkingDir` pins `AgentSettings.WorkingDirectory` to the isolated session dir before tool construction) |
 | `UserExperienceHarness` (v14.19) | User-experience E2E: drives `AgentSession.Prompt` (the real user entry point), captures every visible output line via `IOutputListener`, answers approval prompts like a user, runs **Verbose**, and registers the **real product tool set** (`SessionBuilder.RegisterBuiltInToolsAsync`). Journeys assert on the visible transcript, not engine internals. Gate: env `ECA_E2E_SERVER` (+ optional `ECA_E2E_MODEL`) |
 
 ## Dependency Flow

@@ -26,7 +26,8 @@ public sealed class HarnessE2ESessionFactory
         string endpoint,
         EAgentConfig? config = null,
         Action<EAgentEngine>? configure = null,
-        string? clientName = null)
+        string? clientName = null,
+        Action<string>? prepareWorkingDir = null)
     {
         var regClient = new OpenAIClient(endpoint);
         var regBody = JsonSerializer.Serialize(
@@ -37,6 +38,7 @@ public sealed class HarnessE2ESessionFactory
             ?? throw new InvalidOperationException("client registration returned no client_id");
 
         var workingDir = Directory.CreateTempSubdirectory("eca-harness-e2e").FullName;
+        prepareWorkingDir?.Invoke(workingDir);
         var effectiveConfig = config ?? new EAgentConfig();
         // v14.17: tier-tuned params — match product wiring (small tier tightens default sampling).
         var tierIsLarge = effectiveConfig.ModelTier?.IsLargeRuntime(effectiveConfig.LlmProvider?.IsLocal ?? true)
