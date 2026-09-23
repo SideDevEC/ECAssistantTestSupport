@@ -1,3 +1,4 @@
+using ECAssistant.Core.Config;
 using ECAssistant.Core.Engine;
 using ECAssistant.Core.Interfaces;
 using ECAssistant.Core.Orchestration;
@@ -45,13 +46,14 @@ public class MockEngine : EAgentEngine
         SetSessionOutput(sessionOutput);
     }
 
-    public MockEngine(string? workingDir = null, ISessionOutput? sessionOutput = null, bool cycleResponses = false)
+    public MockEngine(string? workingDir = null, ISessionOutput? sessionOutput = null, bool cycleResponses = false, EAgentConfig? config = null)
         : base("mock-" + Guid.NewGuid().ToString("N")[..8],
             InferenceEngineNoop.Instance, KvCacheNoop.Instance,
             tokenizer: null,
             inferenceParams: new InferenceRequestParams(),
             contextSize: 8192,
             modelPath: "mock",
+            config: config,
             workingDir: workingDir)
     {
         SetMockMode(true);
@@ -241,36 +243,4 @@ public class MockEngine : EAgentEngine
     protected override SubAgentManager CreateSubAgentManager()
         => new(this, _workingDir, _logger, _mockOut, _config, _processRunner, _fileSystem, _httpClient);
 
-    /// <summary>No-op inference engine for mock mode.</summary>
-    internal sealed class InferenceEngineNoop : IInferenceEngine
-    {
-        public static readonly InferenceEngineNoop Instance = new();
-        public string Endpoint => "mock";
-        public Task<string> GenerateAsync(string prompt, InferenceRequestParams parameters, CancellationToken ct = default)
-            => Task.FromResult("");
-        public IAsyncEnumerable<string> StreamAsync(string prompt, InferenceRequestParams parameters, CancellationToken ct = default)
-        {
-            return StreamNoop(ct);
-        }
-
-        private static async IAsyncEnumerable<string> StreamNoop([System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
-        {
-            await Task.CompletedTask;
-            yield break;
-        }
-    }
-
-    /// <summary>No-op KV cache controller for mock mode.</summary>
-    internal sealed class KvCacheNoop : IKvCacheController
-    {
-        public static readonly KvCacheNoop Instance = new();
-        public Task<bool> CreateSessionAsync(string sessionId, string? modelId = null, CancellationToken ct = default) => Task.FromResult(true);
-        public Task<bool> DestroySessionAsync(string sessionId, CancellationToken ct = default) => Task.FromResult(true);
-        public Task<bool> PrefillAsync(string sessionId, string text, CancellationToken ct = default) => Task.FromResult(true);
-        public Task<bool> SaveStateAsync(string sessionId, CancellationToken ct = default) => Task.FromResult(true);
-        public Task<bool> RewindAsync(string sessionId, CancellationToken ct = default) => Task.FromResult(true);
-        public Task<bool> ResetAsync(string sessionId, CancellationToken ct = default) => Task.FromResult(true);
-        public Task<KvCacheStatus?> GetStatusAsync(string sessionId, CancellationToken ct = default)
-            => Task.FromResult<KvCacheStatus?>(null);
-    }
 }
