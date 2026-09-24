@@ -8,7 +8,7 @@
     <RootNamespace>ECAssistant.TestSupport</RootNamespace>
     <AssemblyName>ECAssistant.TestSupport</AssemblyName>
     <IsPackable>true</IsPackable>
-    <Version>12.9.12</Version>
+    <Version>15.0.0</Version>
     <Authors>SideDevEC</Authors>
     <Company>SideDevEC</Company>
     <Product>ECAssistant</Product>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(EcaUseProjectRefs)' != 'true'">
-    <PackageReference Include="ECAssistant.Core" Version="12.9.13" />
+    <PackageReference Include="ECAssistant.Core" Version="15.0.0" />
   </ItemGroup>
 
   <ItemGroup>
