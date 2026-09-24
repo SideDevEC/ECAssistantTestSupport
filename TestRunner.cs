@@ -418,10 +418,6 @@ public sealed class TestRunner : IAsyncDisposable
         // File research tool
         engine.RegisterTool(new EFileResearchTool(fileSystem, config));
 
-        // Prefill KV cache (no-op for mock engine)
-        if (!UseMockEngine)
-            await engine.PrefillStaticPrefix();
-
         // Create orchestrator with tool policy (all allowed for tests)
         var policy = new ECAssistant.Core.Tools.ToolPolicy();
         var orchestrator = new AgentOrchestrator(engine, sessionOutput: null, maxTurns: 10, maxFailures: 3, toolPolicy: policy, logger: _logger);
@@ -432,6 +428,12 @@ public sealed class TestRunner : IAsyncDisposable
         {
             await orchestrator.InitializeSubAgentsAsync(workingDir);
         }
+
+        // Prefill KV cache AFTER late tool registration (sub-agents/handoff) — a prefill
+        // here would be thrown away by InitializeSubAgentsAsync's cache rebuild.
+        // (no-op for mock engine)
+        if (!UseMockEngine)
+            await engine.PrefillStaticPrefix();
 
         return (engine, orchestrator);
     }
