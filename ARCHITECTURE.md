@@ -1,4 +1,4 @@
-# ECAssistantTestSupport — Architecture (2026-09-23)
+# ECAssistantTestSupport — Architecture (2026-09-24)
 
 **Summary:** Standalone test-harness library for ECAssistant.Core — run agent scenarios end-to-end without a real LLM. Published to NuGet as `ECAssistant.TestSupport`; consumed by test suites only, never by runtime code.
 

@@ -1,6 +1,6 @@
 # ECAssistantTestSupport.API.md
 
-Types: 13  |  LOC: 1713  |  ~759 tokens
+Types: 13  |  LOC: 1714  |  ~759 tokens
 
 ---
 

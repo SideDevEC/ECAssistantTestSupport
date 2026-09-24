@@ -50,8 +50,9 @@ public sealed class HarnessE2ESessionFactory
         prepareWorkingDir?.Invoke(workingDir);
         var effectiveConfig = config ?? new AppConfig();
         // v14.17: tier-tuned params — match product wiring (small tier tightens default sampling).
-        var tierIsLarge = effectiveConfig.ModelTier?.IsLargeRuntime(effectiveConfig.LlmProvider?.IsLocal ?? true)
-            ?? !(effectiveConfig.LlmProvider?.IsLocal ?? true);
+        var tierIsLarge = effectiveConfig.ModelTier?.IsLargeRuntime(
+            effectiveConfig.LlmProvider?.ModelId, effectiveConfig.LlmProvider?.IsRemote ?? false)
+            ?? false;
         var session = new AgentSession(
             key: "e2e-" + Guid.NewGuid().ToString("N")[..8],
             sessionId: "e2e-sess-" + Guid.NewGuid().ToString("N")[..8],

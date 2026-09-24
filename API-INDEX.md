@@ -1,11 +1,11 @@
 # API-INDEX.md — ECAssistantTestSupport
 
-Generated: 2026-09-23T13:57:58.869702+00:00
+Generated: 2026-09-24T00:29:49.406382+00:00
 Packages: 1  |  Types: 13
 
 ---
 
-## ECAssistantTestSupport (13 types, ~1713 LOC)
+## ECAssistantTestSupport (13 types, ~1714 LOC)
 
 - 🟡 EcaTestSuite  (ECAssistantTestSupport)
 - 🟡 GuiTestHarness : GuiBase  (ECAssistantTestSupport)
