@@ -1,6 +1,6 @@
 # ECAssistantTestSupport.API.md
 
-Types: 13  |  LOC: 1714  |  ~759 tokens
+Types: 14  |  LOC: 2069  |  ~850 tokens
 
 ---
 
@@ -21,6 +21,10 @@ Cross-package deps: ECAssistant.Core.Config, ECAssistant.Core.Engine, ECAssistan
 > No-op inference engine — no HTTP, no model. GenerateStructuredAsync inherits
 Implements: IInferenceEngine
 Cross-package deps: ECAssistant.Core.Interfaces
+
+### Class: JourneySuiteE2E
+> v15 rigorous journey E2E — long mixed conversations (chat → tools → chat → tools),
+Cross-package deps: ECAssistant.Core.Config, ECAssistant.Core.Engine, ECAssistant.Core.Orchestration, ECAssistant.Core.Session, ECAssistant.Core.Services, ECAssistant.Core.Tools.Build, ECAssistant.Core.Tools.Code, ECAssistant.Core.Tools.Shell, Xunit
 
 ### Class: KvCacheNoop
 > No-op KV cache controller — all operations succeed without a server.

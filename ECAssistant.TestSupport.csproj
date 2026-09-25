@@ -29,6 +29,13 @@
     <PackageReference Include="ECAssistant.Core" Version="15.0.0" />
   </ItemGroup>
 
+  <!-- JourneySuiteE2E ships xunit [Fact]s (env-gated, skip cleanly when no
+       ECA_E2E tier is configured). Consumed by every test project referencing
+       this package; discovery happens in the consuming test assembly. -->
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.5.3" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>

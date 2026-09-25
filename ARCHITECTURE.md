@@ -1,6 +1,8 @@
-# ECAssistantTestSupport — Architecture (2026-09-24)
+# ECAssistantTestSupport — Architecture (2026-09-25)
 
 **Summary:** Standalone test-harness library for ECAssistant.Core — run agent scenarios end-to-end without a real LLM. Published to NuGet as `ECAssistant.TestSupport`; consumed by test suites only, never by runtime code.
+
+**Addendum 2026-09-25 (JourneySuiteE2E moved to TestSupport):** The full 7-journey E2E suite (J1-J6 + J2b compaction probe) moved from ECAssistantCore.Tests into this package as a `public class JourneySuiteE2E` (base class). `dotnet test` only scans a project's own assembly, so consuming test projects discover the inherited [Fact]s via a one-line `sealed class JourneySuiteE2EHost : JourneySuiteE2E {}`. Env-gated - skips cleanly when no ECA_E2E_* tier is configured. xunit PackageReference added to the csproj. New ECA_E2E_LOCAL_PATH env var (serial|batch, default serial) routes dump dirs as local-small-serial / local-small-batch. Remote dump dirs: remote-small / remote-large. Build: 0 errors across TestSupport + Core + Core.Tests.
 
 ## Key Facts
 - Single assembly: `ECAssistant.TestSupport` (net8.0), namespace `ECAssistant.TestSupport`
